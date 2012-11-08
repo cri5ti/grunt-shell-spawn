@@ -58,8 +58,11 @@ module.exports = function( grunt ) {
 
 
         proc.on('exit', function (code) {
-            if ( _.isFunction( data.callback ) )
+            if ( _.isFunction( data.callback ) ) {
                 data.callback.call(this);
+            } else if ( 0 !== code ){
+                grunt.warn("Done, with errors.", 3);
+            }
             done();
         });
 
