@@ -16,6 +16,7 @@ module.exports = function( grunt ) {
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
 
         var cp = require('child_process');
+        var util = require('util');
 
         var data = _.extend( [], grunt.config.get('shell')._options, this.data );
         var dataOut = data.stdout;
