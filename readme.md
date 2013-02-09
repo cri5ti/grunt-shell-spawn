@@ -18,7 +18,9 @@ Simple task, no output, current directory:
 ```javascript
 shell: {
     command: 'compass watch',
-    async: true
+    options: {
+        async: true
+    }
 }
 ```
 
@@ -28,19 +30,23 @@ Multitask, advanced:
 shell: {
     compassWatch: {
         command: 'compass watch',
-        async: true,
-        execOptions: {
-            cwd: './src/www/'
-        }
+        options: {
+            async: true,
+            execOptions: {
+                cwd: './src/www/'
+           }
+       }
     },
     coffeeCompile: {
         command: 'coffee -b -c -o /out /src',
-        async: false,
-        execOptions: {
-            cwd: './src/www/'
+        options: {
+            async: false,
+            execOptions: {
+                cwd: './src/www/'
+            }
         }
     },
-    _options: {
+    options: {
         stdout: true,
         stderr: true,
     }

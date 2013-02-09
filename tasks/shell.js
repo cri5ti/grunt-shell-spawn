@@ -10,7 +10,7 @@
 module.exports = function( grunt ) {
     'use strict';
 
-    var _ = grunt.utils._;
+    var _ = grunt.util._;
     var log = grunt.log;
 
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
@@ -18,25 +18,30 @@ module.exports = function( grunt ) {
         var cp = require('child_process');
         var util = require('util');
 
-        var data = _.extend( [], grunt.config.get('shell')._options, this.data );
-        var dataOut = data.stdout;
-        var dataErr = data.stderr;
-        var done = data.async ? function() {} : this.async();
+        var options = this.options();
+        var data = this.data;
+        var dataOut = options.stdout;
+        var dataErr = options.stderr;
+        var done = options.async ? function() {} : this.async();
         var file, args, opts;
+
+        grunt.verbose.writeflags(options, 'Options');
 
         if (process.platform === 'win32') {
             file = 'cmd.exe';
             args = ['/s', '/c', '"' + data.command + '"'];
             // Make a shallow copy before patching so we don't clobber the user's
             // options object.
-            opts = util._extend({}, data.execOptions);
+            opts = _.clone({}, options.execOptions);
             opts.windowsVerbatimArguments = true;
         } else {
             file = '/bin/sh';
             args = ['-c', data.command];
-            opts = data.execOptions
+            opts = options.execOptions;
         }
 
+        grunt.verbose.writeln('Command: ' + file);
+        grunt.verbose.writeflags(args, 'Args');
         var proc = cp.spawn( file, args, opts);
 
         proc.stdout.on('data', function (data) {
@@ -51,7 +56,7 @@ module.exports = function( grunt ) {
             if ( _.isFunction( dataErr ) ) {
                 dataErr( data );
             } else if ( data.failOnError === true ) {
-                grunt.fatal( data );
+                grunt.fail.fatal( data );
             } else if ( dataErr === true ) {
                 log.error( data.toString() );
             }
@@ -62,7 +67,7 @@ module.exports = function( grunt ) {
             if ( _.isFunction( data.callback ) ) {
                 data.callback.call(this);
             } else if ( 0 !== code ){
-                grunt.warn("Done, with errors.", 3);
+                grunt.fail.warn("Done, with errors.", 3);
             }
             done();
         });

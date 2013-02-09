@@ -1,35 +1,39 @@
 {
-	"name": "grunt-shell-spawn",
-	"version": "0.1.2",
-	"description": "Grunt task to run shell commands",
-	"keywords": [
-		"gruntplugin",
-		"grunt",
-		"shell",
-		"command",
-		"exec",
-		"cli"
-	],
-	"homepage": "https://github.com/sindresorhus/grunt-shell",
-	"bugs": "https://github.com/sindresorhus/grunt-shell/issues",
-	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "http://sindresorhus.com"
-	},
-	"main": "grunt.js",
-	"bin": "bin/grunt-shell",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/sindresorhus/grunt-shell.git"
-	},
-	"dependencies": {
-		"grunt": "~0.3.10"
-	},
-	"engines": {
-		"node": ">=0.6.0"
-	},
-	"licenses": {
-		"type": "MIT"
-	}
+  "name": "grunt-shell-spawn",
+  "version": "0.1.2",
+  "description": "Grunt task to run shell commands",
+  "keywords": [
+    "gruntplugin",
+    "grunt",
+    "shell",
+    "command",
+    "exec",
+    "cli"
+  ],
+  "homepage": "https://github.com/sindresorhus/grunt-shell",
+  "bugs": "https://github.com/sindresorhus/grunt-shell/issues",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "main": "grunt.js",
+  "bin": "bin/grunt-shell",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sindresorhus/grunt-shell.git"
+  },
+  "dependencies": {
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "licenses": {
+    "type": "MIT"
+  },
+  "devDependencies": {
+    "grunt": "0.4.0rc7",
+    "grunt-contrib-jshint": "~0.1.1rc6",
+    "grunt-contrib-watch": "~0.2.0rc7"
+  }
 }

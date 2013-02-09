@@ -8,28 +8,25 @@ module.exports = function( grunt ) {
 	grunt.initConfig({
 		shell: {
 			subfolder_ls: {
-				command: 'ls',
-				stderr: false,
-				failOnError: false,
-				execOptions: {
-					cwd: './tasks'
-				}
+  		  command: 'ls',
+        options: {
+				  stderr: false,
+				  failOnError: false,
+				  execOptions: {
+					  cwd: './tasks'
+				  }
+        }
 			},
-			_options: {
-				stdout: log
+			options: {
+				stdout: log,
+        stderr: log
 			}
 		},
-		lint: {
+		jshint: {
 			files: [
 				'grunt.js',
 				'tasks/**/*.js'
-			]
-		},
-		watch: {
-			files: '<config:lint.files>',
-			tasks: 'default'
-		},
-		jshint: {
+			],
 			options: {
 				es5: true,
 				esnext: true,
@@ -47,11 +44,16 @@ module.exports = function( grunt ) {
 				smarttabs: true,
 				node: true
 			}
-		}
+		},
+		watch: {
+			files: '<%= jshint.hint.files.src %>'
+    }
 	});
 
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadTasks('tasks');
 
-	grunt.registerTask('default', 'lint shell');
+	grunt.registerTask('default', ['jshint', 'shell']);
 
 };
