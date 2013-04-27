@@ -14,11 +14,7 @@ module.exports = function( grunt ) {
 
         var cp = require('child_process');
 
-        var options = this.options({
-            stdout: true,
-            stderr: true,
-            failOnError: true
-        });
+        var options = this.options({stdout: true, stderr: true, failOnError: true});
 
         var data = this.data;
         var done = options.async ? function() {} : this.async();
@@ -40,23 +36,51 @@ module.exports = function( grunt ) {
         grunt.verbose.writeln('Command: ' + file);
         grunt.verbose.writeflags(args, 'Args');
 
-        opts.stdio = [process.stdin, null, null];
-
-        if (options.stdout || grunt.options('verbose'))
-            opts.stdio[1] = process.stdout;
-
-        if (options.stderr || grunt.options('verbose'))
-            opts.stdio[2] = process.stderr;
-
         // spawn
-        var proc = cp.spawn(file, args, opts );
+        var BUFF_LENGTH = 200*1024;
 
-        
+        var proc = cp.spawn(file, args, opts ),
+            error = null,
+            stdOutBuf = new Buffer(BUFF_LENGTH),
+            stdErrBuf = new Buffer(BUFF_LENGTH),
+            stdOutPos = 0,
+            stdErrPos = 0;
+
+
+        proc.stdout.setEncoding('utf8');
+        proc.stderr.setEncoding('utf8');
+
+        proc.on('error', function(err) {
+          error = err;
+        });
+
+        proc.stdout.on('data', function(data) {
+          stdOutPos += stdOutBuf.write(data, stdOutPos);
+          if( _.isFunction( options.stdout ) ) {
+            options.stdout(data);
+          } else if(options.stdout === true || grunt.option('verbose')) {
+            log.write(data);
+          }
+        });
+
+        proc.stderr.on('data', function(data) {
+          stdErrPos += stdErrBuf.write(data, stdErrPos);
+          if( _.isFunction( options.stderr ) ) {
+            options.stderr(data);
+          } else if(options.stderr === true || grunt.option('verbose')) {
+            log.error(data);
+          }
+        });
+
+
         proc.on('close', function (code) {
             if ( _.isFunction( options.callback ) ) {
-                options.callback.call(this);
+              var stdOutString = stdOutBuf.toString('utf8', 0, stdOutPos),
+                  stdErrString = stdOutBuf.toString('utf8', 0, stdErrPos);
+
+              options.callback.call(this, error, stdOutString, stdErrString, done);
             } else if ( 0 !== code && options.failOnError ){
-                grunt.warn("Done, with errors.");
+              grunt.warn("Done, with errors.");
             }
             done();
         });
