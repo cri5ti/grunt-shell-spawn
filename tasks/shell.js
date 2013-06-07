@@ -22,7 +22,7 @@ module.exports = function( grunt ) {
 
         grunt.verbose.writeflags(options, 'Options');
 
-        opts = _.clone({}, options.execOptions);
+        opts = _.defaults({}, options.execOptions);
 
         if (process.platform === 'win32') {
             file = 'cmd.exe';
