@@ -1,6 +1,6 @@
 {
 	"name": "grunt-shell-spawn",
-	"version": "0.2.4",
+	"version": "0.3.0",
 	"description": "Grunt task to run shell commands",
 	"keywords": [
 		"gruntplugin",
@@ -25,6 +25,9 @@
 	}, {
 		"name": "Friedel Ziegelmayer",
 		"url": "https://github.com/Dignifiedquire"
+	}, {
+		"name": "Trevor Landau",
+		"url": "https://github.com/landau"
 	}],
 	"main": "grunt.js",
 	"bin": "bin/grunt-shell-spawn",

@@ -64,6 +64,26 @@ module.exports = function(grunt) {
                         setTimeout(function() { cb(); }, 5000);
                     }
                 }
+            },
+
+            neverEndingTask: {
+                command: 'node tests/server/server.js',
+                options: {
+                    async: true,
+                    kill: true
+                }
+            },
+
+            curl: {
+                command: 'curl http://localhost:1337',
+                options: {
+                    async: false,
+                    stdout: function(msg) {
+                        if (msg !== 'success') {
+                            grunt.fatal('Expected `msg` to equal `success`');
+                        }
+                    }
+                }
             }
         },
 
@@ -75,11 +95,12 @@ module.exports = function(grunt) {
 
     grunt.loadTasks('tasks');
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    //grunt.loadNpmTasks('grunt-contrib-jshint');
+    //grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
     grunt.registerTask('wait', function() {
         this.async();
     });
 
+    grunt.registerTask('killTask', ['shell:neverEndingTask', 'shell:curl', 'shell:neverEndingTask:kill']);
 };

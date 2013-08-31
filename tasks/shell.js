@@ -10,11 +10,14 @@ module.exports = function( grunt ) {
     var _ = grunt.util._;
     var log = grunt.log;
 
+    var procs = {};
+
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
 
         var cp = require('child_process');
+        var proc;
 
-        var options = this.options({stdout: true, stderr: true, failOnError: true});
+        var options = this.options({stdout: true, stderr: true, failOnError: true, kill: false});
 
         var data = this.data;
         var done = options.async ? function() {} : this.async();
@@ -23,6 +26,23 @@ module.exports = function( grunt ) {
         grunt.verbose.writeflags(options, 'Options');
 
         opts = _.defaults({}, options.execOptions);
+
+        // Tests to see if user is trying to kill a running process
+    
+
+        var shouldKill = options.kill && this.args.length === 1 && this.args[0] === 'kill';
+        if (shouldKill) {
+            proc = procs[this.target];
+            if (!proc) {
+                grunt.fatal('No running process for target:' + this.target);
+            }
+            grunt.verbose.writeln('Killing process for target: ' + this.target);
+            proc.kill('SIGKILL');
+            delete procs[this.target];
+            done();
+            return;
+        }
+
 
         if (process.platform === 'win32') {
             file = 'cmd.exe';
@@ -48,7 +68,15 @@ module.exports = function( grunt ) {
             stdErrBuf = new Buffer(BUFF_LENGTH);
         }
          
-        var proc = cp.spawn(file, args, opts );
+        proc = cp.spawn(file, args, opts );
+
+        // Store proc to be killed!
+        if (options.kill) {
+            if (procs[this.target]) {
+                grunt.fatal('Process already exists for target:' + this.target);
+            }
+            procs[this.target] = proc;
+        }
 
         proc.stdout.setEncoding('utf8');
         proc.stderr.setEncoding('utf8');
