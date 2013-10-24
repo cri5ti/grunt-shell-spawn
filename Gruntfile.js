@@ -46,7 +46,7 @@ module.exports = function(grunt) {
                         setTimeout(function() { cb(); }, 5000);
                     }
                 }
-            }, 
+            },
 
             syncWithCallbacks: {
                 command: 'sleep 3 & echo HELLO & sleep 1 & echo WORLD & sleep 2',
@@ -87,15 +87,15 @@ module.exports = function(grunt) {
         },
 
         nodeunit: {
-            tests: ['test/*_test.js']
+            tests: ['tests/*_test.js']
         }
 
     });
 
     grunt.loadTasks('tasks');
 
-    //grunt.loadNpmTasks('grunt-contrib-jshint');
-    //grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
     grunt.registerTask('wait', function() {
         this.async();

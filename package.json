@@ -1,47 +1,59 @@
 {
-	"name": "grunt-shell-spawn",
-	"version": "0.3.0",
-	"description": "Grunt task to run shell commands",
-	"keywords": [
-		"gruntplugin",
-		"grunt",
-		"shell",
-		"command",
-		"exec",
-		"spawn",
-		"cli"
-	],
-	"homepage": "https://github.com/cri5ti/grunt-shell-spawn",
-	"bugs": "https://github.com/cri5ti/grunt-shell-spawn/issues",
-	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "http://sindresorhus.com"
-	},
-	"contributors": [{
-		"name": "Cristi Mihai",
-		"email": "cristi.mihai@gmail.com",
-		"url": "https://github.com/cri5ti"
-	}, {
-		"name": "Friedel Ziegelmayer",
-		"url": "https://github.com/Dignifiedquire"
-	}, {
-		"name": "Trevor Landau",
-		"url": "https://github.com/landau"
-	}],
-	"main": "grunt.js",
-	"bin": "bin/grunt-shell-spawn",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/cri5ti/grunt-shell-spawn.git"
-	},
-	"dependencies": {
-		"grunt": ">=0.4.x"
-	},
-	"engines": {
-		"node": ">=0.6.0"
-	},
-	"licenses": {
-		"type": "MIT"
-	}
+  "name": "grunt-shell-spawn",
+  "version": "0.3.0",
+  "description": "Grunt task to run shell commands",
+  "keywords": [
+    "gruntplugin",
+    "grunt",
+    "shell",
+    "command",
+    "exec",
+    "spawn",
+    "cli"
+  ],
+  "homepage": "https://github.com/cri5ti/grunt-shell-spawn",
+  "bugs": "https://github.com/cri5ti/grunt-shell-spawn/issues",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "contributors": [
+    {
+      "name": "Cristi Mihai",
+      "email": "cristi.mihai@gmail.com",
+      "url": "https://github.com/cri5ti"
+    },
+    {
+      "name": "Friedel Ziegelmayer",
+      "url": "https://github.com/Dignifiedquire"
+    },
+    {
+      "name": "Trevor Landau",
+      "url": "https://github.com/landau"
+    }
+  ],
+  "main": "grunt.js",
+  "bin": "bin/grunt-shell-spawn",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cri5ti/grunt-shell-spawn.git"
+  },
+  "dependencies": {
+    "grunt": ">=0.4.x"
+  },
+  "devDependencies": {
+    "grunt-cli": "~0.1.9",
+    "grunt-contrib-jshint": "~0.7.0",
+    "grunt-contrib-nodeunit": "~0.2.2"
+  },
+  "scripts": {
+    "test": "grunt jshint nodeunit"
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "licenses": {
+    "type": "MIT"
+  }
 }
