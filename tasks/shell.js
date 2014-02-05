@@ -71,7 +71,7 @@ module.exports = function( grunt ) {
 
         if (process.platform === 'win32') {
             file = 'cmd.exe';
-            args = ['/s', '/c', data.command.replace(/\//g, '\\') ];
+            args = ['/s', '/c', data.command ];
             opts.windowsVerbatimArguments = true;
         } else {
             file = '/bin/sh';
