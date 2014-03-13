@@ -83,49 +83,54 @@ module.exports = function( grunt ) {
             procs[target] = proc;
         }
 
-        proc.stdout.setEncoding('utf8');
-        proc.stderr.setEncoding('utf8');
-
-        proc.stdout.on('data', function(data) {
-            if (stdBuffering) {
-                stdOutPos += stdOutBuf.write(data, stdOutPos);
-            }
-
-            if( _.isFunction( options.stdout ) ) {
-                options.stdout(data);
-            } else if(options.stdout === true || grunt.option('verbose')) {
-                log.write(data);
-            }
-        });
-
-        proc.stderr.on('data', function(data) {
-            if (stdBuffering) {
-                stdErrPos += stdErrBuf.write(data, stdErrPos);
-            }
-
-            if( _.isFunction( options.stderr ) ) {
-                options.stderr(data);
-            } else if(options.stderr === true || grunt.option('verbose')) {
-                log.error(data);
-            }
-        });
-
-
-        proc.on('close', function (code) {
-            delete procs[target];
-            if ( _.isFunction( options.callback ) ) {
-                var stdOutString = stdOutBuf.toString('utf8', 0, stdOutPos),
-                    stdErrString = stdOutBuf.toString('utf8', 0, stdErrPos);
-
-                options.callback.call(this, code, stdOutString, stdErrString, done);
-            } else if ( 0 !== code && options.failOnError ){
-                grunt.warn("Done, with errors.");
+        if (opts.stdio !== "inherit") {
+            proc.stdout.setEncoding('utf8');
+            proc.stderr.setEncoding('utf8');
+    
+            proc.stdout.on('data', function(data) {
+                if (stdBuffering) {
+                    stdOutPos += stdOutBuf.write(data, stdOutPos);
+                }
+    
+                if( _.isFunction( options.stdout ) ) {
+                    options.stdout(data);
+                } else if(options.stdout === true || grunt.option('verbose')) {
+                    log.write(data);
+                }
+            });
+    
+            proc.stderr.on('data', function(data) {
+                if (stdBuffering) {
+                    stdErrPos += stdErrBuf.write(data, stdErrPos);
+                }
+    
+                if( _.isFunction( options.stderr ) ) {
+                    options.stderr(data);
+                } else if(options.stderr === true || grunt.option('verbose')) {
+                    log.error(data);
+                }
+            });
+    
+            proc.on('close', function (code) {
+                delete procs[target];
+                if ( _.isFunction( options.callback ) ) {
+                    var stdOutString = stdOutBuf.toString('utf8', 0, stdOutPos),
+                        stdErrString = stdOutBuf.toString('utf8', 0, stdErrPos);
+    
+                    options.callback.call(this, code, stdOutString, stdErrString, done);
+                } else if ( 0 !== code && options.failOnError ){
+                    grunt.warn("Done, with errors.");
+                    done();
+                } else {
+                    done();
+                }
+            });
+        } else {
+            proc.on('exit', function (code) {
+                this.removeAllListeners();
                 done();
-            } else {
-                done();
-            }
-        });
-
+            });
+        }
     });
 
 };
