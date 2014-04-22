@@ -17,7 +17,7 @@ module.exports = function( grunt ) {
         var cp = require('child_process');
         var proc;
 
-        var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true});
+        var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true, stopIfStarted: false});
 
         var data = this.data;
         var done = options.async ? function() {} : this.async();
@@ -78,7 +78,18 @@ module.exports = function( grunt ) {
         // Store proc to be killed!
         if (options.canKill) {
             if (procs[target]) {
-                grunt.fatal('Process :' + target + ' already started.');
+                if (options.stopIfStarted) {
+                    var oldProc = procs[target];
+                    oldProc.removeAllListeners('close');
+                    oldProc.on('close', function() {
+                        log.ok('restarted :' + target)
+                    });
+                    //XXX: SIGTERM may not be enough, nor instantaneous,
+                    //     but SIGKILL may have undesired effects.
+                    oldProc.kill();
+                } else {
+                    grunt.fatal('Process :' + target + ' already started.');
+                }
             }
             procs[target] = proc;
         }
