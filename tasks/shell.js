@@ -112,7 +112,10 @@ module.exports = function( grunt ) {
 
 
         proc.on('close', function (code) {
-            delete procs[target];
+            if (procs[target] && procs[target].pid === proc.pid) {
+                delete procs[target];
+            }
+            
             if ( _.isFunction( options.callback ) ) {
                 var stdOutString = stdOutBuf.toString('utf8', 0, stdOutPos),
                     stdErrString = stdOutBuf.toString('utf8', 0, stdErrPos);
