@@ -40,7 +40,8 @@
     "url": "git://github.com/cri5ti/grunt-shell-spawn.git"
   },
   "dependencies": {
-    "grunt": ">=0.4.x"
+    "grunt": ">=0.4.x",
+    "execSync": "~1.0.1-pre"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.9",

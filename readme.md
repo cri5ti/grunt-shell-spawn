@@ -81,8 +81,6 @@ Works in synchronous or asynchronous mode.
 
 #### Killing an async process
 
-<font color=red>*(Not available on Windows.)*</font>
-
 Stop a running async task with the `:kill` task argument. 
 
 ```
@@ -97,15 +95,8 @@ Stop a running async task with the `:kill` task argument.
 > `grunt shell:server shell:somethingElse shell:server:kill`
 
 The process will be killed with a SIGKILL.
- 
-Please note that the processes are spawned with [child_process.spawn][cp_spawn], and by default an async process will be terminated when grunt finishes. This means it is not required to use `:kill` to clean up processes after your task completes.
 
-If you want a process to be kept running after grunt completes, you can pass the `detached: true` in execOptions:
-
-    options: {
-        execOptions: { detached: true }
-    }
-
+Please note that processes that are not killed will continue running even after grunt finishes, unless explicitly terminated using `:kill`. This means it is required to use `:kill` to clean up any processes you started, unless you want them to continue running in the background.
 
 ## License
 

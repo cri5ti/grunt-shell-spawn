@@ -10,11 +10,14 @@ module.exports = function( grunt ) {
     var _ = grunt.util._;
     var log = grunt.log;
 
-    var procs = {};
+    // Keep track of killable and killed processes.
+    var killable = {};
+    var killed = {};
 
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
 
         var cp = require('child_process');
+        var execSync = require('execSync');
         var proc;
 
         var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true});
@@ -26,28 +29,45 @@ module.exports = function( grunt ) {
 
         grunt.verbose.writeflags(options, 'Options');
 
-        opts = _.defaults({}, options.execOptions);
+        // On Unix, set detached option to make it possible to kill the entire process group later
+        opts = _.defaults({}, options.execOptions, { detached: (process.platform !== 'win32') });
 
         // Tests to see if user is trying to kill a running process
-
-
         var shouldKill = options.canKill && this.args.length === 1 && this.args[0] === 'kill';
         if (shouldKill) {
-            if (process.platform === 'win32') {
-                grunt.warn(":kill doesn't work as expected on Windows.");
-            }
 
-            proc = procs[target];
+            proc = killable[target];
             if (!proc) {
                 grunt.fatal('No running process for target:' + target);
             }
             grunt.verbose.writeln('Killing process for target: ' + target + ' (pid = ' + proc.pid + ')');
-            proc.kill('SIGKILL');
-            delete procs[target];
+
+            // Mark that we're killing this process. This is required because a killed process will
+            // have a null or a non-zero exit code, which would result in an error if the
+            // failOnError option is set. It is assumed that if the user wants to kill a task, that
+            // shouldn't cause an error (they meant to do it) and we should continue processing tasks.
+            killed[target] = proc;
+
+            // Kill the process group. Note that the proc.pid represents the PID of the parent shell
+            // process (/bin/sh or cmd.exe). If we simply kill the parent process, the child
+            // processes will remain running (they will become orphaned). Methods for killing the
+            // entire process group vary by platform.
+            if (process.platform === 'win32') {
+                // On windows, we can run taskkill.exe with the /T parameter to do a tree kill. This
+                // needs to be run synchronously in case the :kill task is the last task in the
+                // list, as otherwise grunt will exit first and the process will keep running.
+                execSync.run('taskkill /f /t /pid ' + proc.pid);
+            } else {
+                // On Unix, we can kill the entire process group by passing in a negative PID. Note
+                // this requires passing in a signal, and it also required us to launch the process
+                // with the option { detached: true }.
+                process.kill(-proc.pid, 'SIGKILL');
+            }
+
+            delete killable[target];
             done();
             return;
         }
-
 
         if (process.platform === 'win32') {
             file = 'cmd.exe';
@@ -77,10 +97,10 @@ module.exports = function( grunt ) {
 
         // Store proc to be killed!
         if (options.canKill) {
-            if (procs[target]) {
+            if (killable[target]) {
                 grunt.fatal('Process :' + target + ' already started.');
             }
-            procs[target] = proc;
+            killable[target] = proc;
         }
 
         proc.stdout.setEncoding('utf8');
@@ -112,14 +132,15 @@ module.exports = function( grunt ) {
 
 
         proc.on('close', function (code) {
-            delete procs[target];
+            delete killable[target];
             if ( _.isFunction( options.callback ) ) {
                 var stdOutString = stdOutBuf.toString('utf8', 0, stdOutPos),
-                    stdErrString = stdOutBuf.toString('utf8', 0, stdErrPos);
+                    stdErrString = stdErrBuf.toString('utf8', 0, stdErrPos);
 
                 options.callback.call(this, code, stdOutString, stdErrString, done);
-            } else if ( 0 !== code && options.failOnError ){
-                grunt.warn("Done, with errors.");
+            } else if (code !== 0 && options.failOnError && !killed[target]){
+                grunt.warn('Done, with errors: command "' + data.command + '" (target "' + target +
+                    '") exited with code ' + code + '.');
                 done();
             } else {
                 done();
