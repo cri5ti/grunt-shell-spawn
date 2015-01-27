@@ -38,7 +38,8 @@ module.exports = function( grunt ) {
 
             proc = killable[target];
             if (!proc) {
-                grunt.fatal('No running process for target:' + target);
+                grunt.log.writeln('No running process for target:' + target);
+                return;
             }
             grunt.verbose.writeln('Killing process for target: ' + target + ' (pid = ' + proc.pid + ')');
 
@@ -98,7 +99,7 @@ module.exports = function( grunt ) {
         // Store proc to be killed!
         if (options.canKill) {
             if (killable[target]) {
-                grunt.fatal('Process :' + target + ' already started.');
+                grunt.warn('Process :' + target + ' already started.');
             }
             killable[target] = proc;
         }
