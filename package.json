@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "grunt": ">=0.4.x",
-    "execSync": "~1.0.1-pre"
+    "sync-exec": "^0.4.0"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.9",
