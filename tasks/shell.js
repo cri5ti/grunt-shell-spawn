@@ -17,7 +17,7 @@ module.exports = function( grunt ) {
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
 
         var cp = require('child_process');
-        var execSync = require('execSync');
+        var execSync = require('sync-exec');
         var proc;
 
         var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true});
