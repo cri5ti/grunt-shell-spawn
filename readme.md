@@ -1,8 +1,12 @@
 # grunt-shell-spawn
 
-> A fork on [sindresorhus][1]'s [grunt-shell][2] ***with support for background processes***.
->  
-> *(e.g.: start a `compass watch` in the background)*
+A fork of [sindresorhus][1]'s [grunt-shell][2] ***with support for background processes***.
+ 
+*(e.g.: start a `compass watch` in the background)*
+
+-----
+
+[Needs a new maintainer!](https://github.com/cri5ti/grunt-shell-spawn/issues/33)
 
 -----
 
