@@ -49,5 +49,7 @@ exports['grunt-shell-spawn'] = {
 
   'Captures stdout, stderr, and exit code of async process': runTestTask.bind(null, 'testProcessAsync'),
 
-  ':kill terminates the process': runTestTask.bind(null, 'killTest')
+  ':kill terminates the process': runTestTask.bind(null, 'killTest'),
+
+  'stopIfStarted option allows restarting a started process': runTestTask.bind(null, 'restartTest')
 };

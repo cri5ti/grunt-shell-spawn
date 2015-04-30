@@ -95,6 +95,15 @@ module.exports = function(grunt) {
                 }
             },
 
+            restartableNeverEndingTask: {
+                command: 'node tests/server/server.js',
+                options: {
+                    async: true,
+                    stopIfStarted: true
+                }
+            },
+
+
             curl: {
                 command: 'curl localhost:1337',
                 options: {
@@ -160,6 +169,11 @@ module.exports = function(grunt) {
     //           indicating that the previous server is still running.
     grunt.registerTask('killTask', ['shell:neverEndingTask', 'wait:2', 'shell:curl', 'shell:neverEndingTask:kill']);
     grunt.registerTask('killTest', ['killTask', 'wait:1', 'killTask']);
+
+    grunt.registerTask('restartTask', ['shell:restartableNeverEndingTask', 'wait:2', 'shell:curl', 
+                                       'shell:restartableNeverEndingTask', 'wait:2', 'shell:curl', 
+                                       'shell:restartableNeverEndingTask:kill']);
+    grunt.registerTask('restartTest', ['restartTask', 'wait:1', 'restartTask']);
 
     // Test case for allowing sequential runs of killable targets
     grunt.registerTask('repeat', ['shell:echo', 'shell:echo']);
