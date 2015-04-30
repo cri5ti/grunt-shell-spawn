@@ -130,7 +130,6 @@ module.exports = function( grunt ) {
             }
         });
 
-
         proc.on('close', function (code) {
             delete killable[target];
             if ( _.isFunction( options.callback ) ) {
@@ -147,6 +146,13 @@ module.exports = function( grunt ) {
             }
         });
 
+    });
+
+    process.on('exit', function () {
+        _.forEach(procs, function (proc, key, collection) {
+            proc.kill();
+            delete collection[key];
+        });
     });
 
 };
