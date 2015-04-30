@@ -150,7 +150,7 @@ module.exports = function( grunt ) {
     });
 
     process.on('exit', function () {
-        _.forEach(procs, function (proc, key, collection) {
+        _.forEach(killable, function (proc, key, collection) {
             proc.kill();
             delete collection[key];
         });
