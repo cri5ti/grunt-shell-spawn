@@ -101,7 +101,7 @@ module.exports = function( grunt ) {
             stdErrBuf = new Buffer(BUFF_LENGTH);
         }
 
-        proc = cp.spawn(file, args, opts );
+        proc = cp.spawn(file, args, opts);
 
         // Store proc to be killed!
         if (options.canKill) {
@@ -122,32 +122,37 @@ module.exports = function( grunt ) {
             killable[target] = proc;
         }
 
-        proc.stdout.setEncoding('utf8');
-        proc.stderr.setEncoding('utf8');
+        // proc.stdout and proc.stderr don't exist when stdio: 'inherit' is
+        // passed to spawn.
+        if (proc.stdout) {
+          proc.stdout.setEncoding('utf8');
+          proc.stdout.on('data', function(data) {
+              if (stdBuffering) {
+                  stdOutPos += stdOutBuf.write(data, stdOutPos);
+              }
 
-        proc.stdout.on('data', function(data) {
-            if (stdBuffering) {
-                stdOutPos += stdOutBuf.write(data, stdOutPos);
-            }
+              if( _.isFunction( options.stdout ) ) {
+                  options.stdout(data);
+              } else if(options.stdout === true || grunt.option('verbose')) {
+                  log.write(data);
+              }
+          });
+        }
 
-            if( _.isFunction( options.stdout ) ) {
-                options.stdout(data);
-            } else if(options.stdout === true || grunt.option('verbose')) {
-                log.write(data);
-            }
-        });
+        if (proc.stderr) {
+          proc.stderr.setEncoding('utf8');
+          proc.stderr.on('data', function(data) {
+              if (stdBuffering) {
+                  stdErrPos += stdErrBuf.write(data, stdErrPos);
+              }
 
-        proc.stderr.on('data', function(data) {
-            if (stdBuffering) {
-                stdErrPos += stdErrBuf.write(data, stdErrPos);
-            }
-
-            if( _.isFunction( options.stderr ) ) {
-                options.stderr(data);
-            } else if(options.stderr === true || grunt.option('verbose')) {
-                log.error(data);
-            }
-        });
+              if( _.isFunction( options.stderr ) ) {
+                  options.stderr(data);
+              } else if(options.stderr === true || grunt.option('verbose')) {
+                  log.error(data);
+              }
+          });
+        }
 
         proc.on('close', function (code) {
             delete killable[target];
