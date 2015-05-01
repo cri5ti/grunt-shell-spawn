@@ -26,6 +26,13 @@ module.exports = function( grunt ) {
         var done = options.async ? function() {} : this.async();
         var target = this.target;
         var file, args, opts;
+        var cmd = data.command;
+        
+        if (cmd === undefined) {
+            throw new Error('`command` required');
+        }
+        
+        cmd = grunt.template.process(typeof cmd === 'function' ? cmd.apply(grunt, arguments) : cmd);
 
         grunt.verbose.writeflags(options, 'Options');
 
@@ -72,11 +79,11 @@ module.exports = function( grunt ) {
 
         if (process.platform === 'win32') {
             file = 'cmd.exe';
-            args = ['/s', '/c', data.command ];
+            args = ['/s', '/c', cmd ];
             opts.windowsVerbatimArguments = true;
         } else {
             file = '/bin/sh';
-            args = ['-c', data.command];
+            args = ['-c', cmd];
         }
 
         grunt.verbose.writeln('Command: ' + file);
