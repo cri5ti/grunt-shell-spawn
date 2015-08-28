@@ -64,7 +64,7 @@ module.exports = function( grunt ) {
                 // On windows, we can run taskkill.exe with the /T parameter to do a tree kill. This
                 // needs to be run synchronously in case the :kill task is the last task in the
                 // list, as otherwise grunt will exit first and the process will keep running.
-                execSync.run('taskkill /f /t /pid ' + proc.pid);
+                execSync('taskkill /f /t /pid ' + proc.pid);
             } else {
                 // On Unix, we can kill the entire process group by passing in a negative PID. Note
                 // this requires passing in a signal, and it also required us to launch the process

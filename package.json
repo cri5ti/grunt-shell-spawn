@@ -1,6 +1,6 @@
 {
   "name": "grunt-shell-spawn",
-  "version": "0.3.8",
+  "version": "0.4.0",
   "description": "Grunt task to run shell commands",
   "keywords": [
     "gruntplugin",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "grunt": ">=0.4.x",
-    "sync-exec": "^0.4.0"
+    "sync-exec": "^0.6.0"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.9",
@@ -52,7 +52,7 @@
     "test": "grunt jshint nodeunit"
   },
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=0.12.7"
   },
   "licenses": {
     "type": "MIT"
