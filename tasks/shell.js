@@ -15,9 +15,7 @@ module.exports = function( grunt ) {
     var killed = {};
 
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
-
         var cp = require('child_process');
-        var execSync = require('sync-exec');
         var proc;
 
         var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true, stopIfStarted: false});
@@ -42,7 +40,6 @@ module.exports = function( grunt ) {
         // Tests to see if user is trying to kill a running process
         var shouldKill = options.canKill && this.args.length === 1 && this.args[0] === 'kill';
         if (shouldKill) {
-
             proc = killable[target];
             if (!proc) {
                 grunt.log.writeln('No running process for target:' + target);
@@ -56,21 +53,7 @@ module.exports = function( grunt ) {
             // shouldn't cause an error (they meant to do it) and we should continue processing tasks.
             killed[target] = proc;
 
-            // Kill the process group. Note that the proc.pid represents the PID of the parent shell
-            // process (/bin/sh or cmd.exe). If we simply kill the parent process, the child
-            // processes will remain running (they will become orphaned). Methods for killing the
-            // entire process group vary by platform.
-            if (process.platform === 'win32') {
-                // On windows, we can run taskkill.exe with the /T parameter to do a tree kill. This
-                // needs to be run synchronously in case the :kill task is the last task in the
-                // list, as otherwise grunt will exit first and the process will keep running.
-                execSync.run('taskkill /f /t /pid ' + proc.pid);
-            } else {
-                // On Unix, we can kill the entire process group by passing in a negative PID. Note
-                // this requires passing in a signal, and it also required us to launch the process
-                // with the option { detached: true }.
-                process.kill(-proc.pid, 'SIGKILL');
-            }
+            killPid(proc.pid);
 
             delete killable[target];
             done();
@@ -112,9 +95,8 @@ module.exports = function( grunt ) {
                     oldProc.on('close', function() {
                         log.ok('restarted :' + target);
                     });
-                    //XXX: SIGTERM may not be enough, nor instantaneous,
-                    //     but SIGKILL may have undesired effects.
-                    oldProc.kill();
+
+                    killPid(oldProc.pid);
                 } else {
                     grunt.fatal('Process :' + target + ' already started.');
                 }
@@ -125,33 +107,33 @@ module.exports = function( grunt ) {
         // proc.stdout and proc.stderr don't exist when stdio: 'inherit' is
         // passed to spawn.
         if (proc.stdout) {
-          proc.stdout.setEncoding('utf8');
-          proc.stdout.on('data', function(data) {
-              if (stdBuffering) {
-                  stdOutPos += stdOutBuf.write(data, stdOutPos);
-              }
+            proc.stdout.setEncoding('utf8');
+            proc.stdout.on('data', function(data) {
+                if (stdBuffering) {
+                    stdOutPos += stdOutBuf.write(data, stdOutPos);
+                }
 
-              if( _.isFunction( options.stdout ) ) {
-                  options.stdout(data);
-              } else if(options.stdout === true || grunt.option('verbose')) {
-                  log.write(data);
-              }
-          });
+                if( _.isFunction( options.stdout ) ) {
+                    options.stdout(data);
+                } else if(options.stdout === true || grunt.option('verbose')) {
+                    log.write(data);
+                }
+            });
         }
 
         if (proc.stderr) {
-          proc.stderr.setEncoding('utf8');
-          proc.stderr.on('data', function(data) {
-              if (stdBuffering) {
-                  stdErrPos += stdErrBuf.write(data, stdErrPos);
-              }
+            proc.stderr.setEncoding('utf8');
+            proc.stderr.on('data', function(data) {
+                if (stdBuffering) {
+                    stdErrPos += stdErrBuf.write(data, stdErrPos);
+                }
 
-              if( _.isFunction( options.stderr ) ) {
-                  options.stderr(data);
-              } else if(options.stderr === true || grunt.option('verbose')) {
-                  log.error(data);
-              }
-          });
+                if( _.isFunction( options.stderr ) ) {
+                    options.stderr(data);
+                } else if(options.stderr === true || grunt.option('verbose')) {
+                    log.error(data);
+                }
+            });
         }
 
         proc.on('close', function (code) {
@@ -178,5 +160,26 @@ module.exports = function( grunt ) {
             delete collection[key];
         });
     });
+
+    function killPid(pid) {
+        var execSync = require('sync-exec');
+
+        // Kill the process group. Note that the proc.pid represents the PID of the parent shell
+        // process (/bin/sh or cmd.exe). If we simply kill the parent process, the child
+        // processes will remain running (they will become orphaned). Methods for killing the
+        // entire process group vary by platform.
+        if (process.platform === 'win32') {
+            // On windows, we can run taskkill.exe with the /T parameter to do a tree kill. This
+            // needs to be run synchronously in case the :kill task is the last task in the
+            // list, as otherwise grunt will exit first and the process will keep running.
+            execSync('taskkill /f /t /pid ' + pid);
+        } else {
+            // On Unix, we can kill the entire process group by passing in a negative PID. Note
+            // this requires passing in a signal, and it also required us to launch the process
+            // with the option { detached: true }.
+            process.kill(-pid, 'SIGKILL');
+        }
+    }
+
 
 };

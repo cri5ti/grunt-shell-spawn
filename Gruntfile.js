@@ -168,11 +168,13 @@ module.exports = function(grunt) {
     //           second time we attempt to launch the server, we would get an "address in use" error
     //           indicating that the previous server is still running.
     grunt.registerTask('killTask', ['shell:neverEndingTask', 'wait:2', 'shell:curl', 'shell:neverEndingTask:kill']);
+    
     grunt.registerTask('killTest', ['killTask', 'wait:1', 'killTask']);
 
     grunt.registerTask('restartTask', ['shell:restartableNeverEndingTask', 'wait:2', 'shell:curl', 
                                        'shell:restartableNeverEndingTask', 'wait:2', 'shell:curl', 
                                        'shell:restartableNeverEndingTask:kill']);
+
     grunt.registerTask('restartTest', ['restartTask', 'wait:1', 'restartTask']);
 
     // Test case for allowing sequential runs of killable targets
