@@ -25,11 +25,11 @@ module.exports = function( grunt ) {
         var target = this.target;
         var file, args, opts;
         var cmd = data.command;
-        
+
         if (cmd === undefined) {
             throw new Error('`command` required');
         }
-        
+
         cmd = grunt.template.process(typeof cmd === 'function' ? cmd.apply(grunt, arguments) : cmd);
 
         grunt.verbose.writeflags(options, 'Options');
@@ -156,9 +156,17 @@ module.exports = function( grunt ) {
 
     process.on('exit', function () {
         _.forEach(killable, function (proc, key, collection) {
-            proc.kill();
+            killPid(proc.pid);
             delete collection[key];
         });
+    });
+
+    process.on('SIGINT', function () {
+        _.forEach(killable, function (proc, key, collection) {
+            killPid(proc.pid);
+            delete collection[key];
+        });
+        process.exit();
     });
 
     function killPid(pid) {
