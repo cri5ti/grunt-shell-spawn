@@ -162,10 +162,6 @@ module.exports = function( grunt ) {
     });
 
     process.on('SIGINT', function () {
-        _.forEach(killable, function (proc, key, collection) {
-            killPid(proc.pid);
-            delete collection[key];
-        });
         process.exit();
     });
 
