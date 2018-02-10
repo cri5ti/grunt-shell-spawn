@@ -18,10 +18,11 @@ module.exports = function( grunt ) {
         var cp = require('child_process');
         var proc;
 
-        var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true, stopIfStarted: false});
+        var options = this.options({stdout: true, stderr: true, failOnError: true, canKill: true, stopIfStarted: false, readyRegex: undefined});
 
         var data = this.data;
-        var done = options.async ? function() {} : this.async();
+        var shouldWaitUntilReady = !!options.readyRegex;
+        var done = options.async && !shouldWaitUntilReady ? function() {} : this.async();
         var target = this.target;
         var file, args, opts;
         var cmd = data.command;
@@ -117,6 +118,10 @@ module.exports = function( grunt ) {
                     options.stdout(data);
                 } else if(options.stdout === true || grunt.option('verbose')) {
                     log.write(data);
+                }
+
+                if (shouldWaitUntilReady && options.readyRegex.test(data)) {
+                    done();
                 }
             });
         }

@@ -83,6 +83,22 @@ Works in synchronous or asynchronous mode.
     }, 
 ```
 
+#### Waiting for an async process to be ready:
+
+Wait for a background process to signal that it's ready before continuing on to the next task by providing `readyRegex`.
+
+```
+    proxy: {
+        command: 'browsermob-proxy',
+        options: {
+            async: true,
+            readyRegex: /Started SelectChannelConnector/
+        }
+    },
+```
+
+This is useful for making sure a proxy is ready to receive requests before beginning tests.
+
 #### Killing an async process
 
 Stop a running async task with the `:kill` task argument. 
