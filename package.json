@@ -1,6 +1,6 @@
 {
   "name": "grunt-shell-spawn",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Grunt task to run shell commands",
   "keywords": [
     "gruntplugin",
@@ -53,7 +53,5 @@
   "engines": {
     "node": ">=0.12.0"
   },
-  "licenses": {
-    "type": "MIT"
-  }
+  "license": "MIT"
 }
