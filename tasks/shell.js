@@ -14,6 +14,25 @@ module.exports = function( grunt ) {
     var killable = {};
     var killed = {};
 
+    function killPid(pid) {
+        // Kill the process group. Note that the proc.pid represents the PID of the parent shell
+        // process (/bin/sh or cmd.exe). If we simply kill the parent process, the child
+        // processes will remain running (they will become orphaned). Methods for killing the
+        // entire process group vary by platform.
+        if (process.platform === 'win32') {
+            var cp = require('child_process');
+            // On windows, we can run taskkill.exe with the /T parameter to do a tree kill. This
+            // needs to be run synchronously in case the :kill task is the last task in the
+            // list, as otherwise grunt will exit first and the process will keep running.
+            cp.execSync('taskkill /f /t /pid ' + pid);
+        } else {
+            // On Unix, we can kill the entire process group by passing in a negative PID. Note
+            // this requires passing in a signal, and it also required us to launch the process
+            // with the option { detached: true }.
+            process.kill(-pid, 'SIGKILL');
+        }
+    }
+
     grunt.registerMultiTask( 'shell', 'Run shell commands', function() {
         var cp = require('child_process');
         var proc;
@@ -165,25 +184,7 @@ module.exports = function( grunt ) {
         process.exit();
     });
 
-    function killPid(pid) {
-        var execSync = require('sync-exec');
 
-        // Kill the process group. Note that the proc.pid represents the PID of the parent shell
-        // process (/bin/sh or cmd.exe). If we simply kill the parent process, the child
-        // processes will remain running (they will become orphaned). Methods for killing the
-        // entire process group vary by platform.
-        if (process.platform === 'win32') {
-            // On windows, we can run taskkill.exe with the /T parameter to do a tree kill. This
-            // needs to be run synchronously in case the :kill task is the last task in the
-            // list, as otherwise grunt will exit first and the process will keep running.
-            execSync('taskkill /f /t /pid ' + pid);
-        } else {
-            // On Unix, we can kill the entire process group by passing in a negative PID. Note
-            // this requires passing in a signal, and it also required us to launch the process
-            // with the option { detached: true }.
-            process.kill(-pid, 'SIGKILL');
-        }
-    }
 
 
 };
