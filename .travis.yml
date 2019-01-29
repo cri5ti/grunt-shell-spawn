@@ -1,0 +1,12 @@
+dist: xenial
+language: node_js
+
+node_js:
+  - "4"
+  - "6"
+  - "8"
+  - "lts/*"
+  - "node"
+
+before_script:
+  - npm install grunt-cli -g

@@ -99,8 +99,8 @@ module.exports = function( grunt ) {
         var stdBuffering = _.isFunction( options.callback );
 
         if (stdBuffering) {
-            stdOutBuf = new Buffer(BUFF_LENGTH);
-            stdErrBuf = new Buffer(BUFF_LENGTH);
+            stdOutBuf = Buffer.alloc(BUFF_LENGTH);
+            stdErrBuf = Buffer.alloc(BUFF_LENGTH);
         }
 
         proc = cp.spawn(file, args, opts);

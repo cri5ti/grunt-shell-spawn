@@ -1,6 +1,6 @@
 {
   "name": "grunt-shell-spawn",
-  "version": "0.3.12",
+  "version": "0.4.0",
   "description": "Grunt task to run shell commands",
   "keywords": [
     "gruntplugin",
@@ -11,8 +11,8 @@
     "spawn",
     "cli"
   ],
-  "homepage": "https://github.com/cri5ti/grunt-shell-spawn",
-  "bugs": "https://github.com/cri5ti/grunt-shell-spawn/issues",
+  "homepage": "https://github.com/jeking3/grunt-shell-spawn",
+  "bugs": "https://github.com/jeking3/grunt-shell-spawn/issues",
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
@@ -31,27 +31,32 @@
     {
       "name": "Trevor Landau",
       "url": "https://github.com/landau"
+    },
+    {
+      "name": "James E. King III",
+      "email": "jking@apache.org",
+      "url": "https://github.com/jeking3"
     }
   ],
   "main": "grunt.js",
   "bin": "bin/grunt-shell-spawn",
   "repository": {
     "type": "git",
-    "url": "git://github.com/cri5ti/grunt-shell-spawn.git"
+    "url": "git://github.com/jeking3/grunt-shell-spawn.git"
   },
   "dependencies": {
     "grunt": ">=0.4.x"
   },
   "devDependencies": {
     "grunt-cli": "^1.3.2",
-    "grunt-contrib-jshint": "^2.0.0",
-    "grunt-contrib-nodeunit": "~0.2.2"
+    "grunt-contrib-jshint": ">=1.1.0",
+    "grunt-contrib-nodeunit": "^2.0.0"
   },
   "scripts": {
     "test": "grunt jshint nodeunit"
   },
   "engines": {
-    "node": ">=0.12.0"
+    "node": ">=4"
   },
   "license": "MIT"
 }
