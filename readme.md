@@ -6,10 +6,6 @@ A fork of [sindresorhus][1]'s [grunt-shell][2] ***with support for background pr
 
 -----
 
-[Needs a new maintainer!](https://github.com/cri5ti/grunt-shell-spawn/issues/33)
-
------
-
 *This plugin requires grunt >= 0.4.x. For grunt 0.3.x, use version `0.1.3`.*
 
 ### Install
