@@ -1,4 +1,4 @@
-# grunt-shell-spawn [![Build Status](https://travis-ci.org/jeking3/grunt-shell-spawn.svg?branch=master)](https://travis-ci.org/jeking3/grunt-shell-spawn) [![Build Status](https://travis-ci.org/jeking3/grunt-shell-spawn.svg?branch=master)](https://travis-ci.org/jeking3/grunt-shell-spawn)
+# grunt-shell-spawn [![Build Status](https://travis-ci.org/jeking3/grunt-shell-spawn.svg?branch=master)](https://travis-ci.org/jeking3/grunt-shell-spawn) [![Build status](https://ci.appveyor.com/api/projects/status/vpf0vqtixd99suii/branch/master?svg=true)](https://ci.appveyor.com/project/jeking3/grunt-shell-spawn/branch/master)
 
 > A fork of [sindresorhus][1]'s [grunt-shell][2] ***with support for background processes***.
 > 
