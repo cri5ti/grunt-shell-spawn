@@ -1,6 +1,10 @@
 dist: xenial
 language: node_js
 
+branches:
+  only:
+    - master
+
 node_js:
   - "4"
   - "6"
