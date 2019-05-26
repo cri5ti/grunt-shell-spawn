@@ -108,6 +108,7 @@ Please note that processes that are not killed will continue running even after 
 
 ## Release History
 
+ * 2019-05-26   v0.4.1   Updated dependencies
  * 2019-01-29   v0.4.0   Added CI on Travis, AppVeyor; updated node.js engine dependency to >=4
  * 2019-01-26   v0.3.12   Removed dependency on exec-sync to resolve security advisory
  * 2015-01-07   v0.3.1   Fix the :kill task on UNIX and Windows
